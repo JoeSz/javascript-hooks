@@ -1,0 +1,41 @@
+{
+    "tags": {
+        "allowUnknownTags": true,
+        "dictionaries": [ "jsdoc" ]
+    },
+    "source": {
+        "include": [ "index.js", "functional/index.js", "objective/index.js", "hooks/index.js", "README.md" ],
+        "includePattern": ".+\\.js(doc)?$",
+        "excludePattern": "(^|\\/|\\\\)_"
+    },
+    "templates": {
+        "cleverLinks": true,
+        "monospaceLinks": true,
+        "default": {
+            "outputSourceFiles": true
+        },
+        "systemName"            : "JavaScript Hooks",
+        "footer"                : "<span class=\"jsdoc-message\">We Want to Make the Web better for Using in World</span>",
+        "copyright"             : "© 2016 BAYAT ALL RIGHTS RESERVED",
+        "includeDate"           : true,
+        "navType"               : "inline",
+        "theme"                 : "journal",
+        "linenums"              : true,
+        "collapseSymbols"       : false,
+        "inverseNav"            : true,
+        "outputSourceFiles"     : true,
+        "outputSourcePath"      : true,
+        "dateFormat"            : "dddd, MMMM Do YYYY, h:mm:ss a",
+        "syntaxTheme"           : "default",
+        "sort"                  : true,
+        "analytics"             : {"ua":"UA-82440807-1", "domain":"auto"}
+    },
+    "jsVersion": 180,
+    "opts": {
+        "template": "templates/default",
+        "encoding": "utf8",
+        "destination": "./documentation/",
+        "recurse": true,
+        "tutorials": ""
+    }
+}

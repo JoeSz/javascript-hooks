@@ -1,0 +1,35 @@
+{
+  "name": "javascript-hooks",
+  "version": "1.0.0",
+  "description": "A Powerful Hook system for Javascript (Like wordpress Hook system)",
+  "main": "index.js",
+  "scripts": {
+    "test": "node -v",
+    "gendocs": "jsdoc -c conf.json -t ./node_modules/ink-docstrap/template -r"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EmpireWorld/javascript-hooks.git"
+  },
+  "keywords": [
+    "javascript",
+    "javascript",
+    "hooks",
+    "javascript",
+    "hook",
+    "system",
+    "wordpress",
+    "hooks",
+    "for",
+    "javascript",
+    "hooks",
+    "hook",
+    "system"
+  ],
+  "author": "Bayat",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/EmpireWorld/javascript-hooks/issues"
+  },
+  "homepage": "https://github.com/EmpireWorld/javascript-hooks#readme"
+}
