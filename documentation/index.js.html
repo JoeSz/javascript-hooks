@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>JavaScript Hooks Source: index.js</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.journal.css">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top navbar-inverse">
+<div class="container">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">JavaScript Hooks</a>
+		<button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#topNavigation">
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+			<span class="icon-bar"></span>
+        </button>
+	</div>
+	<div class="navbar-collapse collapse" id="topNavigation">
+		<ul class="nav navbar-nav">
+			
+			<li class="dropdown">
+				<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b class="caret"></b></a>
+				<ul class="dropdown-menu inline">
+					<li><a href="global.html#addAction">addAction</a></li><li><a href="global.html#addFilter">addFilter</a></li><li><a href="global.html#addHook">addHook</a></li><li><a href="global.html#applyFilters">applyFilters</a></li><li><a href="global.html#doAction">doAction</a></li><li><a href="global.html#doHook">doHook</a></li><li><a href="global.html#hooks">hooks</a></li><li><a href="global.html#removeAction">removeAction</a></li><li><a href="global.html#removeFilter">removeFilter</a></li><li><a href="global.html#removeHook">removeHook</a></li>
+				</ul>
+			</li>
+			
+		</ul>
+		<div class="col-sm-3 col-md-3">
+            <form class="navbar-form" role="search">
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Search" name="q" id="search-input">
+                    <div class="input-group-btn">
+                        <button class="btn btn-default" id="search-submit"><i class="glyphicon glyphicon-search"></i></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+	</div>
+
+</div>
+</div>
+
+
+<div class="container" id="toc-content">
+<div class="row">
+
+	
+	<div class="col-md-12">
+	
+		<div id="main">
+			
+
+		<h1 class="page-title">Source: index.js</h1>
+    
+<section>
+    <article>
+        <pre
+            class="sunlight-highlight-javascript linenums">var HooksFunctions = {};
+
+/**
+ * Hooks
+ *
+ * @description Reference of Registered hooks in specified hook type
+ *
+ * @property {Object} action Action hooks
+ * @property {Object} filter Filter hooks
+ *
+ * @name hooks
+ *
+ * @type {Object}
+ */
+var hooks = {
+    action: {},
+    filter: {}
+};
+
+/**
+ * @description Individual arguments
+ * @typedef {Arguments}
+ * @example
+ * function someFunction( arg1, arg2, arg3, arg4, ... ) {}
+ */
+
+/**
+ * Add Hook
+ *
+ * @description Adds a new hook to action reference
+ *
+ * @method addHook
+ * @name addHook
+ * @function
+ *
+ * @param  {String}   hookType The hook type
+ * @param  {String}   action   The action
+ * @param  {Function} callable The callback for action
+ * @param  {String}   tag      The tag for hook
+ *
+ * @example
+ * addHook( 'action', 'action_name', myCallback );
+ * function myCallback( actionArguments ) {
+ *     console.log( 'Callback Runs!' );
+ * }
+ */
+HooksFunctions.addHook = function ( hookType, action, callable, tag ) {
+    if ( undefined == hooks[ hookType ][ action ] ) {
+        hooks[ hookType ][ action ] = [];
+    }
+    if ( undefined == tag ) {
+        tag = action + '_' + hooks[ hookType ][ action ].length;
+    }
+    hooks[ hookType ][ action ].push( { 
+        tag: tag, 
+        callable: callable 
+    } );
+}
+
+/**
+ * Do Hook
+ *
+ * @description Do a hook at specified position from a action reference
+ *
+ * @method doHook
+ * @name doHook
+ * @function
+ *
+ * @param  {String}    hookType The hook type
+ * @param  {String}    action   The action name
+ * @param  {String}    value    The value to be filtered
+ * @param  {Arguments} args     Arguments to pass to the hooks of action
+ *
+ * @return {Mixed}              Returns filtered data
+ *
+ * @example
+ * var myValue;
+ * myValue = doHook( 'action', 'action_name', null, 'Argument 1', 'Argument 2' ); // pass empty value because we don't want filter any value
+ */
+HooksFunctions.doHook = function ( hookType, action, value, args ) {
+    var theArgsArray = Array.prototype.slice.call( arguments );
+    var passArgs = [];
+    if ( !Array.isArray( args ) ) {
+        for ( var i = 0; i &lt; theArgsArray.length; i++ ) {
+            if ( i > 3 ) {
+                passArgs.push( theArgsArray[ i ] );
+            }
+        }
+    } else {
+        passArgs = args;
+    }
+    if ( undefined != hooks[ hookType ][ action ] ) {
+        var theHooks = hooks[ hookType ][ action ];
+        for( var i = 0; i &lt; theHooks.length; i++ ) {
+            if ( 'action' == hookType ) {
+                theHooks[ i ].callable.apply( this, passArgs );
+            } else {
+                passArgs.unshift( value );
+                value = theHooks[ i ].callable.apply( this, passArgs );
+            }
+        }
+    }
+    if ( 'filter' == hookType ) {
+        return value;
+    }
+}
+
+/**
+ * Remove Hook
+ *
+ * @description Removes a hook from a action reference
+ *
+ * @method removeHook
+ * @name removeHook
+ * @function
+ *
+ * @param  {String}    hookType The hook type
+ * @param  {String}    action   The action name
+ * @param  {String}    tag      The hook tag
+ *
+ * @example
+ * removeHook( 'action', 'action_name', 'action_name_1' ); // removes first hook from action_name
+ */
+HooksFunctions.removeHook = function ( hookType, action, tag ) {
+    if ( undefined != hooks[ hookType ][ action ] ) {
+        var theHooks = hooks[ hookType ][ action ];
+        for ( var i = theHooks.length - 1; i >= 0; i-- ) {
+            if ( undefined == tag || tag == hooks[ hookType ][ action ].tag ) {
+                theHooks.splice( i, 1 );
+            }
+        }
+    }
+}
+
+/**
+ * Add Action
+ *
+ * @description Adds a new hook to reference of action
+ *
+ * @method addAction
+ * @name addAction
+ * @function
+ *
+ * @param  {String}   action   The action name
+ * @param  {Function} callable The callback
+ * @param  {String}   tag      The hook tag
+ *
+ * @example
+ * addAction( 'action_name', myCallback );
+ * function myCallback( arg1, arg2 ) {
+ *     console.log( arg1, arg2 );
+ *     console.info( 'Callback Runs' );
+ * }
+ */
+HooksFunctions.addAction = function ( action, callable, tag ) {
+    this.addHook( 'action', action, callable, tag );
+}
+
+/**
+ * Do Action
+ *
+ * @description Do a hook at specified position and time
+ *
+ * @method doAction
+ * @name doAction
+ * @function
+ *
+ * @param  {String}   action   The action name
+ * @param  {Function} args     The Argument to pass to hook
+ *
+ * @example
+ * doAction( 'action_name', 'Argument 1', 'Argument 2' );
+ */
+HooksFunctions.doAction = function ( action, args ) {
+    var theArgsArray = Array.prototype.slice.call( arguments );
+    var passArgs = [];
+    if ( !Array.isArray( args ) ) {
+        for ( var i = 0; i &lt; theArgsArray.length; i++ ) {
+            if ( i > 1 ) {
+                passArgs.push( theArgsArray[ i ] );
+            }
+        }
+    } else {
+        passArgs = args;
+    }
+    this.doHook( 'action', action, null, passArgs );
+}
+
+/**
+ * Remove Action
+ *
+ * @description Removes a hook from a action reference
+ *
+ * @method removeAction
+ * @name removeAction
+ * @function
+ *
+ * @param  {String}   action   The action name
+ * @param  {String}   tag      The hook tag
+ *
+ * @example
+ * removeAction( 'action_name', 'action_name_1' );
+ */
+HooksFunctions.removeAction = function ( action, tag ) {
+    this.removeHook( 'action', action, tag ); 
+}
+
+/**
+ * Add Filter
+ *
+ * @description Adds a new filter to a filter reference
+ *
+ * @method addFilter
+ * @name addFilter
+ * @function
+ *
+ * @param  {String}   action   The action name
+ * @param  {Function} callable The callback
+ * @param  {String}   tag      The hook tag
+ *
+ * @example
+ * addFilter( 'action_name', myCallback );
+ * function myCallback( arg1, arg2 ) {
+ *     console.log( arg1, arg2 );
+ *     console.info( 'Callback Runs' );
+ * }
+ */
+HooksFunctions.addFilter = function ( action, callable, tag ) {
+    this.addHook( 'filter', action, callable, tag );
+}
+
+/**
+ * Apply Filters
+ *
+ * @description Applies filters to a specified value (variable) and returns the filtered value (variable)
+ *
+ * @method applyFilters
+ * @name applyFilters
+ * @function
+ *
+ * @param  {String}   action   The action name
+ * @param  {Function} args     The Argument to pass to hook
+ *
+ * @example
+ * applyFilters( 'action_name', 'Argument 1', 'Argument 2' );
+ */
+HooksFunctions.applyFilters = function ( action, value, args ) {
+    var theArgsArray = Array.prototype.slice.call( arguments );
+    var passArgs = [];
+    if ( !Array.isArray( args ) ) {
+        for ( var i = 0; i &lt; theArgsArray.length; i++ ) {
+            if ( i > 2 ) {
+                passArgs.push( theArgsArray[ i ] );
+            }
+        }
+    } else {
+        passArgs = args;
+    }
+    return this.doHook( 'filter', action, value, passArgs );
+}
+
+/**
+ * Remove Filter
+ *
+ * @description Removes a filter from a filter reference
+ *
+ * @method removeFilter
+ * @name removeFilter
+ * @function
+ *
+ * @param  {String}   action   The action name
+ * @param  {String}   tag      The hook tag
+ *
+ * @example
+ * removeFilter( 'action_name', 'action_name_1' );
+ */
+HooksFunctions.removeFilter = function ( action, tag ) {
+    this.removeHook( 'filter', action, tag );
+}
+
+// Exporting
+module.exports.HooksFunctions = HooksFunctions;
+module.exports.hooks = hooks;</pre>
+    </article>
+</section>
+
+
+
+
+
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+
+	
+
+</div>
+</div>
+
+<div class="modal fade" id="searchResults">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Search results</h4>
+      </div>
+      <div class="modal-body"></div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>
+
+<footer>
+
+	<span class="jsdoc-message">We Want to Make the Web better for Using in World</span>
+
+
+	<span class="copyright">
+	© 2016 BAYAT ALL RIGHTS RESERVED
+	</span>
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a>
+	
+		on Wednesday, August 17th 2016, 12:05:12 pm
+	
+	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
+</span>
+</footer>
+
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/toc.js"></script>
+<script type="text/javascript" src="scripts/fulltext-search-ui.js"></script>
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( ".tutorial-section pre, .readme-section pre" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			var langClassMatch = example.parent()[0].className.match(/lang\-(\S+)/);
+			lang = langClassMatch ? langClassMatch[1] : "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : true,
+		showMenu : true,
+		enableDoclinks : true
+	} );
+
+	$.catchAnchorLinks( {
+        navbarOffset: 10
+	} );
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			var id = $( heading ).attr( "id" );
+			return id && id.replace(/\~/g, '-inner-').replace(/\./g, '-static-') || ( prefix + i );
+		},
+		selectors   : "#toc-content h1,#toc-content h2,#toc-content h3,#toc-content h4",
+		showAndHide : false,
+		smoothScrolling: true
+	} );
+
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+
+    $( "table" ).each( function () {
+      var $this = $( this );
+      $this.addClass('table');
+    } );
+
+} );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+<script>
+	(function ( i, s, o, g, r, a, m ) {
+		i['GoogleAnalyticsObject'] = r;
+		i[r] = i[r] || function () {
+			(i[r].q = i[r].q || []).push( arguments )
+		}, i[r].l = 1 * new Date();
+		a = s.createElement( o ),
+			m = s.getElementsByTagName( o )[0];
+		a.async = 1;
+		a.src = g;
+		m.parentNode.insertBefore( a, m )
+	})( window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga' );
+
+	ga( 'create', 'UA-82440807-1', 'auto' );
+	ga( 'send', 'pageview' );
+</script>
+
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		SearcherDisplay.init();
+	});
+</script>
+
+</body>
+</html>
