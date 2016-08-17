@@ -5,11 +5,14 @@
 }
 
 .demo-card-wide.mdl-card {
-    width: 100%;
+    width: 60%;
+    margin-right: auto;
+    margin-left: auto;
 }
 .demo-card-wide > .mdl-card__title {
     color: #000;
-    height: 176px;
+    height: 400px;
+    width: 100%;
     background: url('./images/javascript.jpg') center / cover;
 }
 .demo-card-wide > .mdl-card__menu {
