@@ -33,3 +33,7 @@ console.log( arrayOfNames );
 # Documentation
 For documentation go to the website of repository: 
 [Documentation](https://empireworld.github.io/javascript-hooks/documentation)
+
+# Todos
+- Create a cli interface
+- Priority (for hooks)
