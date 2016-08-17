@@ -1,6 +1,6 @@
 {
   "name": "javascript-hooks",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A Powerful Hook system for Javascript (Like wordpress Hook system)",
   "main": "index.js",
   "scripts": {
