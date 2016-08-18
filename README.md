@@ -35,5 +35,6 @@ For documentation go to the website of repository:
 [Documentation](https://empireworld.github.io/javascript-hooks/documentation)
 
 # Todos
-- Create a cli interface
-- Priority (for hooks)
+- Create a __CLI__ interface
+- __Priority__ (for hooks)
+- Custom __Hook Types__
