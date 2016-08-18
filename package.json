@@ -16,7 +16,9 @@
     "javascript-hooks",
     "javascript-hook-system",
     "wordpress-hooks-for-javascript",
-    "hook-system"
+    "wordpress-hooks",
+    "hook-system",
+    "hooks"
   ],
   "author": "Bayat",
   "license": "MIT",
