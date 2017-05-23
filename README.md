@@ -38,3 +38,8 @@ For documentation go to the website of repository:
 - Create a __CLI__ interface
 - __Priority__ (for hooks)
 - Custom __Hook Types__
+
+## License
+MIT @ [Bayat](https://github.com/EmpireWorld/)
+
+Made with :heart: by [Bayat](https://github.com/EmpireWorld/)
